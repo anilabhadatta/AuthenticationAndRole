@@ -1,7 +1,8 @@
 package com.saas.authenticationandrole.service;
 
-import com.saas.authenticationandrole.dao.AuthenticateExtnDao;
-import com.saas.authenticationandrole.dto.LinkGenerationDto;
+import com.saas.authenticationandrole.constants.SQLConstants;
+import com.saas.authenticationandrole.dao.LinkGenerationDao;
+import com.saas.authenticationandrole.dto.response.ResponseDto;
 import com.saas.authenticationandrole.util.LinkGenerationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,13 @@ public class AuthenticateExtnService {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticateExtnService.class);
 
     @Autowired
-    AuthenticateExtnDao authenticateExtnDao;
+    LinkGenerationDao linkGenerationDao;
 
     @Autowired
     LinkGenerationUtil linkGenerationUtil;
 
-    public LinkGenerationDto getAuthenticateExtnAPIs(){
-        logger.info("Entering AuthenticateExtnService");
-        return linkGenerationUtil.generateResultApiJson(authenticateExtnDao.getAuthenticationExtnAPIs());
+    public ResponseDto<Object> getAuthenticateExtnAPIs(){
+        logger.info("Entering getAuthenticateExtnAPIs");
+        return linkGenerationUtil.generateResultApiJson(linkGenerationDao.getAPIs(SQLConstants.GET_AUTHENTICATE_EXTN_APIS));
     }
 }

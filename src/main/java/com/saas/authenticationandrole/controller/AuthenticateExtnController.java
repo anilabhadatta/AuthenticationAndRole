@@ -1,11 +1,12 @@
 package com.saas.authenticationandrole.controller;
 
-import com.saas.authenticationandrole.dto.LinkGenerationDto;
 import com.saas.authenticationandrole.dto.UserDetailsDto;
 import com.saas.authenticationandrole.dto.request.LoginRequestDto;
 import com.saas.authenticationandrole.dto.response.JwtResponseDto;
+import com.saas.authenticationandrole.dto.response.ResponseDto;
 import com.saas.authenticationandrole.filter.JwtUtils;
 import com.saas.authenticationandrole.service.AuthenticateExtnService;
+import com.saas.authenticationandrole.service.DashboardService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -39,12 +40,14 @@ public class AuthenticateExtnController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    DashboardService dashboardService;
 
     @GetMapping("/getApis")
-    public LinkGenerationDto getAuthenticateAPIs() {
-        LinkGenerationDto output = authenticateExtnService.getAuthenticateExtnAPIs();
-        logger.info(String.valueOf(output));
-        return output;
+    public ResponseEntity<?> getAuthenticateAPIs() {
+        ResponseDto<Object> output = authenticateExtnService.getAuthenticateExtnAPIs();
+        logger.info(output.toString());
+        return ResponseEntity.ok(output);
     }
 
     @PostMapping("/login")
@@ -61,10 +64,13 @@ public class AuthenticateExtnController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponseDto(jwt,
+        JwtResponseDto jwtResponseDto = new JwtResponseDto(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles));
+                roles);
+        ResponseDto<Object> responseDto = dashboardService.getDashboardAPIs();
+        responseDto.setBody(jwtResponseDto);
+        return ResponseEntity.ok(responseDto);
     }
 }

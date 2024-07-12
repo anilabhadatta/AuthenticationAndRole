@@ -1,6 +1,6 @@
 package com.saas.authenticationandrole.util;
 
-import com.saas.authenticationandrole.dto.LinkGenerationDto;
+import com.saas.authenticationandrole.dto.response.ResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,8 +12,8 @@ public class LinkGenerationUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(LinkGenerationUtil.class);
 
-    public LinkGenerationDto generateResultApiJson(List<List<String>> links){
-        LinkGenerationDto linkGenerationDto = new LinkGenerationDto();
+    public ResponseDto<Object> generateResultApiJson(List<List<String>> links){
+        ResponseDto<Object> linkGenerationDto = new ResponseDto<>();
         linkGenerationDto.setLinks(links);
         return linkGenerationDto;
     }

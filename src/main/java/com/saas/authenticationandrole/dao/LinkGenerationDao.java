@@ -1,6 +1,5 @@
 package com.saas.authenticationandrole.dao;
 
-import com.saas.authenticationandrole.constants.SQLConstants;
 import com.saas.authenticationandrole.service.DatabaseService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -19,10 +18,9 @@ import java.util.List;
 
 @Component
 @RequestScope
-public class AuthenticateExtnDao {
-
+public class LinkGenerationDao {
     private Connection conn;
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticateExtnDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(LinkGenerationDao.class);
 
     @Autowired
     DatabaseService dbService;
@@ -33,9 +31,9 @@ public class AuthenticateExtnDao {
         logger.info("Created Connection: {}, Autocommit: {}", this.conn.hashCode(), this.conn.getAutoCommit());
     }
 
-    public List<List<String>> getAuthenticationExtnAPIs() {
+    public List<List<String>> getAPIs(String linkGenerationQuery) {
         List<List<String>> outData = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(SQLConstants.GET_AUTHENTICATE_EXTN_APIS);
+        try (PreparedStatement ps = conn.prepareStatement(linkGenerationQuery);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 String module = rs.getString(1);
@@ -53,6 +51,7 @@ public class AuthenticateExtnDao {
             throw new RuntimeException(e);
         }
     }
+
 
     @PreDestroy
     public void destroyConnection() throws SQLException {

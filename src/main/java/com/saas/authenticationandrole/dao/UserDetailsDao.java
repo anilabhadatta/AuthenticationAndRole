@@ -18,8 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @RequestScope
@@ -78,6 +77,38 @@ public class UserDetailsDao {
                 return roles;
             }
         }
+    }
+
+
+    public List<UserDetailsDto> getAllUserData() {
+        Map<String, UserDetailsDto> userMap = new HashMap<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(SQLConstants.GET_ALL_USERDATA);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String username = rs.getString("username");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                String roleId = rs.getString("role_id");
+                String roleName = rs.getString("role_name");
+
+                UserDetailsDto user = userMap.get(id);
+                if (user == null) {
+                    user = new UserDetailsDto(id, username, email, password, new HashSet<>());
+                    userMap.put(id, user);
+                }
+                if (user.getRoles() == null){
+                    user.setRoles(new HashSet<>());
+                }
+                user.getRoles().add(new Role(roleId, roleName));
+
+            }
+        } catch (SQLException e) {
+            logger.error("SQLException occurred", e);
+        }
+
+        return new ArrayList<>(userMap.values());
     }
 
     @PreDestroy
